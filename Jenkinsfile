@@ -4,7 +4,7 @@
 void setBuildStatusWithBackref (String context, String message, String state, String backref) {
   step([
       $class: "GitHubCommitStatusSetter",
-      reposSource: [$class: "ManuallyEnteredRepositorySource", url: "https://api.github.com/repos/cw-paas-dev/test-jenkins" ],
+      reposSource: [$class: "ManuallyEnteredRepositorySource", url: "https://github.com/cw-paas-dev/test-jenkins.git" ],
       contextSource: [$class: "ManuallyEnteredCommitContextSource", context: context ],
       errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]],
       statusBackrefSource: [ $class: "ManuallyEnteredBackrefSource", backref: backref ],
