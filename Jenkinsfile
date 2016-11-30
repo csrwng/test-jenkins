@@ -26,4 +26,8 @@ node {
   stage("Output build URL") {
     echo "The build URL is ${env.BUILD_URL}"
   }
+  stage("Approve") {
+    setBuildStatusWithBackref("ci/test", "Approve here", "PENDING", "${env.BUILD_URL}input")
+    input "Do you approve?"
+  }
 }
