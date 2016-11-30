@@ -1,13 +1,29 @@
 #!/usr/bin/env groovy
 
-void setBuildStatus(String message, String state) {
+def setBuildStatus = { String context, String message, String state ->
   step([
       $class: "GitHubCommitStatusSetter",
-      reposSource: [$class: "ManuallyEnteredRepositorySource", url: "https://github.com/cw-paas-dev/test-jenkins"],
-      contextSource: [$class: "ManuallyEnteredCommitContextSource", context: "ci/jenkins/build-status"],
+      contextSource: [$class: "ManuallyEnteredCommitContextSource", context: context ],
       errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]],
       statusResultSource: [ $class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: message, state: state]] ]
   ]);
 }
 
-setBuildStatus("A test commit status", "SUCCESS")
+def setBuildStatusWithBackref = { String context, String message, String state, String backref ->
+  step([
+      $class: "GitHubCommitStatusSetter",
+      contextSource: [$class: "ManuallyEnteredCommitContextSource", context: context ],
+      errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]],
+      statusBackrefSource: [ $class: "ManuallyEnteredBackrefSource", backref: backref ],
+      statusResultSource: [ $class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: message, state: state]] ]
+  ]);
+}
+
+node {
+  stage("Set Preview URL") {
+    setBuildStatusWithBackref("ci/preview", "The application is running", "SUCCESS", "http://www.google.com")
+  }
+  stage("Output build URL") {
+    echo "The build URL is ${env.BUILD_URL}"
+  }
+}
