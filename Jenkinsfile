@@ -10,4 +10,8 @@ void setBuildStatus(String message, String state) {
   ]);
 }
 
-setBuildStatus("A test commit status", "SUCCESS")
+node {
+  stage("Set Build Status") {
+    setBuildStatus("A test commit status", "SUCCESS")
+  }
+}
