@@ -29,5 +29,6 @@ node {
   stage("Approve") {
     setBuildStatusWithBackref("ci/test", "Approve here", "PENDING", "${env.BUILD_URL}input")
     input "Do you approve?"
+    setBuildStatus("ci/test", "Manually approved", "SUCCESS")
   }
 }
