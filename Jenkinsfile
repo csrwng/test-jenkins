@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 
-def setBuildStatus = { String context, String message, String state ->
+void setBuildStatus (String context, String message, String state) {
   step([
       $class: "GitHubCommitStatusSetter",
       contextSource: [$class: "ManuallyEnteredCommitContextSource", context: context ],
@@ -9,7 +9,7 @@ def setBuildStatus = { String context, String message, String state ->
   ]);
 }
 
-def setBuildStatusWithBackref = { String context, String message, String state, String backref ->
+void setBuildStatusWithBackref (String context, String message, String state, String backref) {
   step([
       $class: "GitHubCommitStatusSetter",
       contextSource: [$class: "ManuallyEnteredCommitContextSource", context: context ],
@@ -26,4 +26,9 @@ node {
   stage("Output build URL") {
     echo "The build URL is ${env.BUILD_URL}"
   }
+  stage("Approve") {
+    setBuildStatusWithBackref("ci/test", "Approve here", "PENDING", "${env.BUILD_URL}input")
+    input "Do you approve?"
+  }
+  setBuildStatus("ci/test", "Manually approved", "SUCCESS")
 }
