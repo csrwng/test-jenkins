@@ -1,8 +1,9 @@
 #!/usr/bin/env groovy
 
-void setBuildStatus (String commitId, String context, String message, String state) {
+void setBuildStatus (String repoUrl, String commitId, String context, String message, String state) {
   step([
       $class: "GitHubCommitStatusSetter",
+      repoSource: [$class: "ManuallyEnteredRepositorySource", url: repoUrl ],
       commitShaSource: [$class: "ManuallyEnteredShaSource", sha: commitId ],
       contextSource: [$class: "ManuallyEnteredCommitContextSource", context: context ],
       errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]],
@@ -10,9 +11,10 @@ void setBuildStatus (String commitId, String context, String message, String sta
   ]);
 }
 
-void setBuildStatusWithBackref (String commitId, String context, String message, String state, String backref) {
+void setBuildStatusWithBackref (String repoUrl, String commitId, String context, String message, String state, String backref) {
   step([
       $class: "GitHubCommitStatusSetter",
+      repoSource: [$class: "ManuallyEnteredRepositorySource", url: repoUrl ],
       commitShaSource: [$class: "ManuallyEnteredShaSource", sha: commitId ],
       contextSource: [$class: "ManuallyEnteredCommitContextSource", context: context ],
       errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]],
@@ -33,14 +35,14 @@ node {
     sh "env"
   }
   stage("Set Preview URL") {
-    setBuildStatusWithBackref(commitId, "ci/preview", "The application is running", "SUCCESS", "http://www.google.com")
+    setBuildStatusWithBackref(env.CHANGE_URL, commitId, "ci/preview", "The application is running", "SUCCESS", "http://www.google.com")
   }
   stage("Output build URL") {
     echo "The build URL is ${env.BUILD_URL}"
   }
   stage("Approve") {
-    setBuildStatusWithBackref(commitId, "ci/test", "Approve here", "PENDING", "${env.BUILD_URL}input")
+    setBuildStatusWithBackref(env.CHANGE_URL, commitId, "ci/test", "Approve here", "PENDING", "${env.BUILD_URL}input")
     input "Do you approve?"
   }
-  setBuildStatus(commitId, "ci/test", "Manually approved", "SUCCESS")
+  setBuildStatus(env.CHANGE_URL, commitId, "ci/test", "Manually approved", "SUCCESS")
 }
