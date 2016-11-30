@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 
-def setBuildStatus { String context, String message, String state ->
+def setBuildStatus = { String context, String message, String state ->
   step([
       $class: "GitHubCommitStatusSetter",
       contextSource: [$class: "ManuallyEnteredCommitContextSource", context: context ],
@@ -9,7 +9,7 @@ def setBuildStatus { String context, String message, String state ->
   ]);
 }
 
-def setBuildStatusWithBackref { String context, String message, String state, String backref ->
+def setBuildStatusWithBackref = { String context, String message, String state, String backref ->
   step([
       $class: "GitHubCommitStatusSetter",
       contextSource: [$class: "ManuallyEnteredCommitContextSource", context: context ],
