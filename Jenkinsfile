@@ -3,8 +3,6 @@
 void setBuildStatus (String repoUrl, String commitId, String context, String message, String state) {
   step([
       $class: "GitHubCommitStatusSetter",
-      repoSource: [$class: "ManuallyEnteredRepositorySource", url: repoUrl ],
-      commitShaSource: [$class: "ManuallyEnteredShaSource", sha: commitId ],
       contextSource: [$class: "ManuallyEnteredCommitContextSource", context: context ],
       errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]],
       statusResultSource: [ $class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: message, state: state]] ]
@@ -14,8 +12,6 @@ void setBuildStatus (String repoUrl, String commitId, String context, String mes
 void setBuildStatusWithBackref (String repoUrl, String commitId, String context, String message, String state, String backref) {
   step([
       $class: "GitHubCommitStatusSetter",
-      repoSource: [$class: "ManuallyEnteredRepositorySource", url: repoUrl ],
-      commitShaSource: [$class: "ManuallyEnteredShaSource", sha: commitId ],
       contextSource: [$class: "ManuallyEnteredCommitContextSource", context: context ],
       errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]],
       statusBackrefSource: [ $class: "ManuallyEnteredBackrefSource", backref: backref ],
