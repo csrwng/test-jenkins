@@ -16,7 +16,7 @@ node {
   stage("Set Build Status") {
     checkout scm
     setBuildStatusWithBackref("ci/preview", "The application is running", "SUCCESS", "http://www.google.com")
-    sh "git remote -v"
+    sh "git config --get remote.origin.url"
     sh "env"
   }
 }
