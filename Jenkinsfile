@@ -14,6 +14,7 @@ void setBuildStatusWithBackref (String context, String message, String state, St
 
 node {
   stage("Set Build Status") {
+    checkout scm
     setBuildStatusWithBackref("ci/preview", "The application is running", "SUCCESS", "http://www.google.com")
     sh "env"
   }
