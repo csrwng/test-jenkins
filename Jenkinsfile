@@ -1,12 +1,14 @@
 #!/usr/bin/env groovy
 
 def sayHello = {
-  echo "Hello World"
-}
-
-node {
-  stage("Say Hello") {
-    sayHello()
+  node {
+    stage("Say Hello") {
+      echo "hello world"
+    }
+    stage("Part Two") {
+      echo "part two"
+    }
   }
 }
 
+sayHello()
