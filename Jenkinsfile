@@ -1,10 +1,10 @@
 #!/usr/bin/env groovy
 
 // A change
-void setBuildStatusWithBackref (String context, String message, String state, String backref) {
+void setBuildStatusWithBackref (String url, String context, String message, String state, String backref) {
   step([
       $class: "GitHubCommitStatusSetter",
-      reposSource: [$class: "ManuallyEnteredRepositorySource", url: "https://github.com/cw-paas-dev/test-jenkins.git" ],
+      reposSource: [$class: "ManuallyEnteredRepositorySource", url: url ],
       contextSource: [$class: "ManuallyEnteredCommitContextSource", context: context ],
       errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]],
       statusBackrefSource: [ $class: "ManuallyEnteredBackrefSource", backref: backref ],
@@ -15,8 +15,9 @@ void setBuildStatusWithBackref (String context, String message, String state, St
 node {
   stage("Set Build Status") {
     checkout scm
-    setBuildStatusWithBackref("ci/preview", "The application is running", "SUCCESS", "http://www.google.com")
-    sh "git config --get remote.origin.url"
+    sh "git config --get remote.origin.url > originurl"
+    originUrl = readFile("originurl").trim()
+    setBuildStatusWithBackref(originUrl, "ci/preview", "The application is running", "SUCCESS", "http://www.google.com")
     sh "env"
   }
 }
